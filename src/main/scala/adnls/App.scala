@@ -1,6 +1,6 @@
 package adnls
 
-import java.io.{BufferedReader, PrintWriter, StringReader, StringWriter}
+import java.io._
 import java.net.URLClassLoader
 
 import helpers.Args
@@ -15,9 +15,10 @@ import scala.tools.nsc.GenericRunnerSettings
 
 object App {
 
+
   def runInterpreter(input: String, conf: SparkConf) = {
 
-    val in = new BufferedReader(new StringReader(input + "\n"))
+    val in = new BufferedReader(new StringReader(input))
     val out = new StringWriter()
     val cl = getClass.getClassLoader
     var paths = new ArrayBuffer[String]
@@ -47,20 +48,41 @@ object App {
 
   def main(args: Array[String]) {
 
+    val oldPs = System.out
+
+    val fOut = new ByteArrayOutputStream()
+    val fErr = new ByteArrayOutputStream()
+
+    val psOut = new PrintStream(fOut)
+    val psErr = new PrintStream(fErr)
+
+    System.setErr(psErr)
+    System.setOut(psOut)
+
     Args.parse(args)
 
     val conf = new SparkConf()
       .setMaster("local[*]")
       .setAppName("SparkLauncher")
 
-    val command =
+    val commands =
       """
         val myDF = spark.read.option("header", "true").option("sep", ",").csv("test.csv")
+
+        println("Res1")
         myDF.show()
+
+        println("Res2")
+        println(myDF.count())
+
+        println("Res3")
+        myDF.printSchema()
 
       """.stripMargin
 
-    val res = runInterpreter(command, conf)
-    println(res)
+    val result = runInterpreter(commands, conf)
+
+    System.setOut(oldPs)
+    System.out.println(fOut.toString)
   }
 }
