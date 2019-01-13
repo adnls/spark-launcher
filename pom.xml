@@ -56,6 +56,12 @@
       <version>${spark.version}</version>
     </dependency>
 
+    <!-- SocketIo -->
+    <dependency>
+      <groupId>com.lightbend.play</groupId>
+      <artifactId>play-socket-io_${scala.compat.version}</artifactId>
+      <version>1.0.0-beta-2</version>
+    </dependency>
 
     <!-- Test -->
     <dependency>
