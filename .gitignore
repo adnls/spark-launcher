@@ -1,5 +1,7 @@
 .idea/
 target/
+data/
+log/
 *.txt
 *.csv
 *.iml

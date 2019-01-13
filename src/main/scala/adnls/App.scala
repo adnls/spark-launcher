@@ -19,16 +19,17 @@ object App {
     //System.setOut(psOut)
     //System.setOut(oldPs)
 
-    val fErr = new File("log.txt")
+    val fErr = new File("log/log.txt")
     val psErr = new PrintStream(fErr)
     System.setErr(psErr)
 
     val commands =
       """
-        val myDF = spark.read.option("header", "true").option("sep", ",").csv("test.csv")
+        val myDF = spark.read.option("header", "true").option("sep", ",").csv("data/in/test.csv")
         myDF.show()
         myDF.count()
         myDF.printSchema()
+        myDF.withColumn("bool", lit("true")).write.mode("overwrite").option("header", "true").option("sep", ",").csv("data/out")
 
       """.stripMargin
 
